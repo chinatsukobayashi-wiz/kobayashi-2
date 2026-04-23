@@ -83,11 +83,18 @@
         </svg>
       </button>
 
-      <!-- Profile -->
-      <div class="global-nav-profile" id="profileBtn" data-tooltip="田中 太郎">
-        <div class="profile-avatar">太</div>
+      <!-- Admin (visible only to admins) -->
+      <a class="global-nav-admin hidden" id="adminLink" href="/admin.html" data-tooltip="管理者設定">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </a>
+
+      <!-- Profile (click to go to admin) -->
+      <a class="global-nav-profile" id="profileBtn" href="/admin.html" data-tooltip="管理者設定">
+        <div class="profile-avatar">千</div>
         <span class="profile-status-dot online"></span>
-      </div>
+      </a>
     </div>
   </div>
 
@@ -271,8 +278,11 @@
       </div>
     </div>
 
-    <div class="messages-container" id="messagesContainer">
+    <div class="messages-container" id="messagesContainer" style="position:relative">
       <div class="messages" id="messages"></div>
+      <div class="drop-overlay" id="dropOverlay">
+        <div class="drop-overlay-text">ファイルをドロップしてアップロード</div>
+      </div>
     </div>
 
     <div class="message-input-container" style="position:relative">
@@ -288,9 +298,13 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
           </button>
         </div>
+        <div class="file-preview" id="filePreview" style="display:none">
+          <div class="file-preview-inner" id="filePreviewInner"></div>
+        </div>
         <div class="input-area">
           <textarea id="messageInput" placeholder="#general にメッセージを送信" rows="1"></textarea>
         </div>
+        <input type="file" id="fileInput" accept="image/*,video/*" style="display:none" multiple>
         <div class="input-actions">
           <div class="input-actions-left">
             <button class="action-btn" title="添付ファイル" id="attachBtn">
@@ -353,6 +367,12 @@
       <button class="btn-primary" id="confirmAddChannel">作成</button>
     </div>
   </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose">&times;</button>
+  <div id="lightboxContent"></div>
 </div>
 
 <script src="app.js"></script>

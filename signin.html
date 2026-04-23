@@ -3,17 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Slack - サインイン</title>
+<title>Slack にサインインする</title>
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="signin.css">
 </head>
 <body>
 
-<!-- Header -->
-<header class="header">
-  <div class="header-inner">
-    <a href="#" class="logo">
-      <svg width="28" height="28" viewBox="0 0 54 54" fill="none">
+<div class="page">
+
+  <!-- Step 1: Sign In -->
+  <div class="step" id="stepSignin">
+    <div class="logo-area">
+      <svg class="slack-logo" width="30" height="30" viewBox="0 0 54 54" fill="none">
         <path d="M19.7 43.2c0 2.9-2.4 5.3-5.3 5.3s-5.3-2.4-5.3-5.3 2.4-5.3 5.3-5.3h5.3v5.3z" fill="#E01E5A"/>
         <path d="M22.4 43.2c0-2.9 2.4-5.3 5.3-5.3s5.3 2.4 5.3 5.3v13.2c0 2.9-2.4 5.3-5.3 5.3s-5.3-2.4-5.3-5.3V43.2z" fill="#E01E5A"/>
         <path d="M27.7 19.7c-2.9 0-5.3-2.4-5.3-5.3s2.4-5.3 5.3-5.3 5.3 2.4 5.3 5.3v5.3h-5.3z" fill="#36C5F0"/>
@@ -23,153 +24,148 @@
         <path d="M43.2 51.2c2.9 0 5.3-2.4 5.3-5.3s-2.4-5.3-5.3-5.3-5.3 2.4-5.3 5.3v5.3h5.3z" fill="#ECB22E"/>
         <path d="M43.2 48.5c-2.9 0-5.3-2.4-5.3-5.3s2.4-5.3 5.3-5.3h13.2c2.9 0 5.3 2.4 5.3 5.3s-2.4 5.3-5.3 5.3H43.2z" fill="#ECB22E"/>
       </svg>
-      <span class="logo-text">slack</span>
-    </a>
-    <nav class="header-nav">
-      <a href="#">新規作成</a>
-      <a href="#" class="btn-outline">ワークスペースを検索</a>
-    </nav>
-  </div>
-</header>
+    </div>
 
-<!-- Main -->
-<main class="main">
-  <div class="signin-container">
-    <!-- Step 1: Email -->
-    <div class="signin-card" id="stepEmail">
-      <h1>まずメールアドレスから</h1>
-      <p class="subtitle">ワークスペースへのサインインにはメールアドレスを使用することをおすすめします。</p>
+    <h1>Slack にサインインする</h1>
+    <p class="subtitle">続行するには、メールアドレスを入力してください。</p>
+
+    <div class="signin-form-area">
+      <div class="social-buttons">
+        <button class="btn-social google" id="googleBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+          </svg>
+          <span>Google で続行する</span>
+        </button>
+        <button class="btn-social apple" id="appleBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+          </svg>
+          <span>Apple で続行する</span>
+        </button>
+      </div>
+
+      <div class="divider"><span>または</span></div>
 
       <form id="emailForm" autocomplete="off">
         <div class="form-group">
           <input type="email" id="emailInput" placeholder="name@work-email.com" required autocomplete="email">
         </div>
         <button type="submit" class="btn-primary" id="emailSubmitBtn">
-          <span class="btn-text">メールアドレスでサインイン</span>
-          <span class="btn-loading" style="display:none">
-            <span class="spinner"></span>
-          </span>
+          <span class="btn-text">メールアドレスでサインインする</span>
+          <span class="btn-loading"><span class="spinner"></span></span>
         </button>
       </form>
-
-      <div class="divider">
-        <span>または</span>
-      </div>
-
-      <div class="social-buttons">
-        <button class="btn-social" id="googleBtn">
-          <svg width="20" height="20" viewBox="0 0 24 24">
-            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
-            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-          </svg>
-          <span>Googleで続ける</span>
-        </button>
-        <button class="btn-social" id="appleBtn">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
-          </svg>
-          <span>Appleで続ける</span>
-        </button>
-      </div>
     </div>
 
-    <!-- Step 2: Password -->
-    <div class="signin-card hidden" id="stepPassword">
-      <button class="back-btn" id="backToEmail">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
-        戻る
-      </button>
-      <h1>パスワードを入力</h1>
-      <p class="subtitle" id="emailDisplay"></p>
-
-      <form id="passwordForm">
-        <div class="form-group">
-          <div class="password-wrapper">
-            <input type="password" id="passwordInput" placeholder="パスワード" required>
-            <button type="button" class="password-toggle" id="passwordToggle">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="eyeIcon">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                <circle cx="12" cy="12" r="3"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-        <button type="submit" class="btn-primary" id="passwordSubmitBtn">
-          <span class="btn-text">サインイン</span>
-          <span class="btn-loading" style="display:none">
-            <span class="spinner"></span>
-          </span>
-        </button>
-      </form>
-
-      <a href="#" class="forgot-link">パスワードをお忘れですか？</a>
-    </div>
-
-    <!-- Step 3: Workspace Select -->
-    <div class="signin-card hidden" id="stepWorkspace">
-      <div class="success-icon">
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-          <circle cx="24" cy="24" r="24" fill="#007a5a"/>
-          <path d="M15 24l6 6 12-12" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-      <h1>ワークスペースを選択</h1>
-      <p class="subtitle" id="workspaceEmailDisplay"></p>
-
-      <div class="workspace-list" id="workspaceList">
-        <div class="workspace-option" data-ws="myworkspace">
-          <div class="ws-icon" style="background:#4A154B">M</div>
-          <div class="ws-info">
-            <span class="ws-name">My Workspace</span>
-            <span class="ws-url">myworkspace.slack.com</span>
-          </div>
-          <div class="ws-members">5人のメンバー</div>
-          <svg class="ws-arrow" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
-        </div>
-        <div class="workspace-option" data-ws="dev-team">
-          <div class="ws-icon" style="background:#1264a3">D</div>
-          <div class="ws-info">
-            <span class="ws-name">Dev Team</span>
-            <span class="ws-url">dev-team.slack.com</span>
-          </div>
-          <div class="ws-members">12人のメンバー</div>
-          <svg class="ws-arrow" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
-        </div>
-        <div class="workspace-option" data-ws="design">
-          <div class="ws-icon" style="background:#e01e5a">P</div>
-          <div class="ws-info">
-            <span class="ws-name">Product Design</span>
-            <span class="ws-url">product-design.slack.com</span>
-          </div>
-          <div class="ws-members">8人のメンバー</div>
-          <svg class="ws-arrow" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
-        </div>
-      </div>
-
-      <div class="another-workspace">
-        <span>別のワークスペースにサインインする</span>
-      </div>
+    <div class="terms">
+      <p>サインインすると、<a href="#">利用規約</a>、<a href="#">プライバシーポリシー</a>、<a href="#">Cookie ポリシー</a>に同意したことになります。</p>
     </div>
   </div>
-</main>
 
-<!-- Footer -->
-<footer class="footer">
-  <div class="footer-inner">
-    <div class="footer-links">
-      <a href="#">プライバシーポリシー</a>
-      <span class="dot">&middot;</span>
-      <a href="#">利用規約</a>
-      <span class="dot">&middot;</span>
-      <a href="#">Cookie ポリシー</a>
-      <span class="dot">&middot;</span>
-      <a href="#">お問い合わせ</a>
+  <!-- Step 2: Confirmation code / Password -->
+  <div class="step hidden" id="stepPassword">
+    <div class="logo-area">
+      <svg class="slack-logo" width="30" height="30" viewBox="0 0 54 54" fill="none">
+        <path d="M19.7 43.2c0 2.9-2.4 5.3-5.3 5.3s-5.3-2.4-5.3-5.3 2.4-5.3 5.3-5.3h5.3v5.3z" fill="#E01E5A"/>
+        <path d="M22.4 43.2c0-2.9 2.4-5.3 5.3-5.3s5.3 2.4 5.3 5.3v13.2c0 2.9-2.4 5.3-5.3 5.3s-5.3-2.4-5.3-5.3V43.2z" fill="#E01E5A"/>
+        <path d="M27.7 19.7c-2.9 0-5.3-2.4-5.3-5.3s2.4-5.3 5.3-5.3 5.3 2.4 5.3 5.3v5.3h-5.3z" fill="#36C5F0"/>
+        <path d="M27.7 22.4c2.9 0 5.3 2.4 5.3 5.3s-2.4 5.3-5.3 5.3H14.4c-2.9 0-5.3-2.4-5.3-5.3s2.4-5.3 5.3-5.3h13.3z" fill="#36C5F0"/>
+        <path d="M51.2 27.7c0-2.9-2.4-5.3-5.3-5.3s-5.3 2.4-5.3 5.3 2.4 5.3 5.3 5.3h5.3v-5.3z" fill="#2EB67D"/>
+        <path d="M48.5 27.7c0 2.9-2.4 5.3-5.3 5.3s-5.3-2.4-5.3-5.3V14.4c0-2.9 2.4-5.3 5.3-5.3s5.3 2.4 5.3 5.3v13.3z" fill="#2EB67D"/>
+        <path d="M43.2 51.2c2.9 0 5.3-2.4 5.3-5.3s-2.4-5.3-5.3-5.3-5.3 2.4-5.3 5.3v5.3h5.3z" fill="#ECB22E"/>
+        <path d="M43.2 48.5c-2.9 0-5.3-2.4-5.3-5.3s2.4-5.3 5.3-5.3h13.2c2.9 0 5.3 2.4 5.3 5.3s-2.4 5.3-5.3 5.3H43.2z" fill="#ECB22E"/>
+      </svg>
     </div>
-    <p class="footer-copy">&copy; 2026 Slack Clone Demo</p>
+
+    <h1>確認コードをチェック</h1>
+    <p class="subtitle"><span id="emailDisplay"></span> に 6 桁のコードを送信しました。</p>
+
+    <div class="code-inputs" id="codeInputs">
+      <input type="text" maxlength="1" class="code-input" data-idx="0" inputmode="numeric" autofocus>
+      <input type="text" maxlength="1" class="code-input" data-idx="1" inputmode="numeric">
+      <input type="text" maxlength="1" class="code-input" data-idx="2" inputmode="numeric">
+      <span class="code-dash">-</span>
+      <input type="text" maxlength="1" class="code-input" data-idx="3" inputmode="numeric">
+      <input type="text" maxlength="1" class="code-input" data-idx="4" inputmode="numeric">
+      <input type="text" maxlength="1" class="code-input" data-idx="5" inputmode="numeric">
+    </div>
+
+    <div class="code-hint" id="codeHint">
+      <p>ヒント: デモでは任意の 6 桁を入力してください</p>
+    </div>
+
+    <div class="resend-area">
+      <span class="resend-text">コードが届きませんか？</span>
+      <button class="resend-btn" id="resendBtn">コードを再送信</button>
+    </div>
+
+    <button class="back-link" id="backToEmail">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      別のメールアドレスを使用する
+    </button>
   </div>
-</footer>
+
+  <!-- Step 3: Workspace Select -->
+  <div class="step hidden" id="stepWorkspace">
+    <div class="logo-area">
+      <svg class="slack-logo" width="30" height="30" viewBox="0 0 54 54" fill="none">
+        <path d="M19.7 43.2c0 2.9-2.4 5.3-5.3 5.3s-5.3-2.4-5.3-5.3 2.4-5.3 5.3-5.3h5.3v5.3z" fill="#E01E5A"/>
+        <path d="M22.4 43.2c0-2.9 2.4-5.3 5.3-5.3s5.3 2.4 5.3 5.3v13.2c0 2.9-2.4 5.3-5.3 5.3s-5.3-2.4-5.3-5.3V43.2z" fill="#E01E5A"/>
+        <path d="M27.7 19.7c-2.9 0-5.3-2.4-5.3-5.3s2.4-5.3 5.3-5.3 5.3 2.4 5.3 5.3v5.3h-5.3z" fill="#36C5F0"/>
+        <path d="M27.7 22.4c2.9 0 5.3 2.4 5.3 5.3s-2.4 5.3-5.3 5.3H14.4c-2.9 0-5.3-2.4-5.3-5.3s2.4-5.3 5.3-5.3h13.3z" fill="#36C5F0"/>
+        <path d="M51.2 27.7c0-2.9-2.4-5.3-5.3-5.3s-5.3 2.4-5.3 5.3 2.4 5.3 5.3 5.3h5.3v-5.3z" fill="#2EB67D"/>
+        <path d="M48.5 27.7c0 2.9-2.4 5.3-5.3 5.3s-5.3-2.4-5.3-5.3V14.4c0-2.9 2.4-5.3 5.3-5.3s5.3 2.4 5.3 5.3v13.3z" fill="#2EB67D"/>
+        <path d="M43.2 51.2c2.9 0 5.3-2.4 5.3-5.3s-2.4-5.3-5.3-5.3-5.3 2.4-5.3 5.3v5.3h5.3z" fill="#ECB22E"/>
+        <path d="M43.2 48.5c-2.9 0-5.3-2.4-5.3-5.3s2.4-5.3 5.3-5.3h13.2c2.9 0 5.3 2.4 5.3 5.3s-2.4 5.3-5.3 5.3H43.2z" fill="#ECB22E"/>
+      </svg>
+    </div>
+
+    <h1><span id="wsEmailName"></span> のワークスペース</h1>
+    <p class="subtitle">下のワークスペースを選択して開く、または<a href="#" class="link">新しいワークスペースを作成</a>できます。</p>
+
+    <div class="workspace-list" id="workspaceList">
+      <a class="ws-card" data-ws="myworkspace">
+        <div class="ws-card-icon" style="background:#4A154B">M</div>
+        <div class="ws-card-info">
+          <div class="ws-card-name">My Workspace</div>
+          <div class="ws-card-meta">
+            <span class="ws-card-members">5人のメンバー</span>
+          </div>
+        </div>
+        <span class="ws-card-open">開く</span>
+      </a>
+      <a class="ws-card" data-ws="dev-team">
+        <div class="ws-card-icon" style="background:#1264a3">D</div>
+        <div class="ws-card-info">
+          <div class="ws-card-name">Dev Team</div>
+          <div class="ws-card-meta">
+            <span class="ws-card-members">12人のメンバー</span>
+          </div>
+        </div>
+        <span class="ws-card-open">開く</span>
+      </a>
+      <a class="ws-card" data-ws="design">
+        <div class="ws-card-icon" style="background:#e01e5a">P</div>
+        <div class="ws-card-info">
+          <div class="ws-card-name">Product Design</div>
+          <div class="ws-card-meta">
+            <span class="ws-card-members">8人のメンバー</span>
+          </div>
+        </div>
+        <span class="ws-card-open">開く</span>
+      </a>
+    </div>
+
+    <div class="ws-footer-links">
+      <p>お探しのワークスペースが表示されませんか？ <a href="#" class="link">別のメールアドレスを試す</a></p>
+    </div>
+  </div>
+
+</div>
 
 <script src="signin.js"></script>
 </body>

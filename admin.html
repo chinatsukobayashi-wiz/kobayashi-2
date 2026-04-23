@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>管理者ダッシュボード - Slack Clone</title>
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<!-- Auth Gate (Slack-style) -->
+<div class="auth-gate" id="authGate">
+  <div class="auth-page">
+    <div class="auth-logo">
+      <svg width="30" height="30" viewBox="0 0 54 54" fill="none">
+        <path d="M19.7 43.2c0 2.9-2.4 5.3-5.3 5.3s-5.3-2.4-5.3-5.3 2.4-5.3 5.3-5.3h5.3v5.3z" fill="#E01E5A"/>
+        <path d="M22.4 43.2c0-2.9 2.4-5.3 5.3-5.3s5.3 2.4 5.3 5.3v13.2c0 2.9-2.4 5.3-5.3 5.3s-5.3-2.4-5.3-5.3V43.2z" fill="#E01E5A"/>
+        <path d="M27.7 19.7c-2.9 0-5.3-2.4-5.3-5.3s2.4-5.3 5.3-5.3 5.3 2.4 5.3 5.3v5.3h-5.3z" fill="#36C5F0"/>
+        <path d="M27.7 22.4c2.9 0 5.3 2.4 5.3 5.3s-2.4 5.3-5.3 5.3H14.4c-2.9 0-5.3-2.4-5.3-5.3s2.4-5.3 5.3-5.3h13.3z" fill="#36C5F0"/>
+        <path d="M51.2 27.7c0-2.9-2.4-5.3-5.3-5.3s-5.3 2.4-5.3 5.3 2.4 5.3 5.3 5.3h5.3v-5.3z" fill="#2EB67D"/>
+        <path d="M48.5 27.7c0 2.9-2.4 5.3-5.3 5.3s-5.3-2.4-5.3-5.3V14.4c0-2.9 2.4-5.3 5.3-5.3s5.3 2.4 5.3 5.3v13.3z" fill="#2EB67D"/>
+        <path d="M43.2 51.2c2.9 0 5.3-2.4 5.3-5.3s-2.4-5.3-5.3-5.3-5.3 2.4-5.3 5.3v5.3h5.3z" fill="#ECB22E"/>
+        <path d="M43.2 48.5c-2.9 0-5.3-2.4-5.3-5.3s2.4-5.3 5.3-5.3h13.2c2.9 0 5.3 2.4 5.3 5.3s-2.4 5.3-5.3 5.3H43.2z" fill="#ECB22E"/>
+      </svg>
+    </div>
+
+    <!-- Step 1: Email -->
+    <div class="auth-step" id="authStep1">
+      <h1>ワークスペースの管理画面にサインインする</h1>
+      <p class="auth-subtitle">管理者アカウントのメールアドレスを入力してください。</p>
+
+      <form id="emailForm" autocomplete="off">
+        <div class="auth-form-group">
+          <input type="email" id="authEmail" placeholder="name@work-email.com" required autocomplete="email">
+        </div>
+        <button type="submit" class="auth-btn-primary" id="emailBtn">
+          <span class="btn-text">メールアドレスで続行する</span>
+          <span class="btn-spinner"><span class="spinner"></span></span>
+        </button>
+      </form>
+
+      <div class="auth-form-error" id="emailError"></div>
+
+      <div class="auth-footer-text">
+        <a href="/">チャット画面に戻る</a>
+      </div>
+    </div>
+
+    <!-- Step 2: Password -->
+    <div class="auth-step hidden" id="authStep2">
+      <h1>パスワードを入力</h1>
+      <p class="auth-subtitle">
+        <span class="auth-email-badge" id="emailBadge"></span>
+      </p>
+
+      <form id="passwordForm">
+        <div class="auth-form-group">
+          <div class="password-field">
+            <input type="password" id="authPassword" placeholder="パスワード" required autocomplete="current-password">
+            <button type="button" class="password-eye" id="passwordEye">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <button type="submit" class="auth-btn-primary" id="passwordBtn">
+          <span class="btn-text">サインイン</span>
+          <span class="btn-spinner"><span class="spinner"></span></span>
+        </button>
+      </form>
+
+      <div class="auth-form-error" id="passwordError"></div>
+
+      <button class="auth-back-btn" id="backToEmail">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+        別のメールアドレスを使用する
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Admin App -->
+<div class="admin-app hidden" id="adminApp">
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar-header">
+      <div class="admin-logo">
+        <div class="admin-logo-icon">⚙️</div>
+        <span class="admin-logo-text">設定と管理</span>
+      </div>
+    </div>
+    <nav class="admin-nav">
+      <a class="admin-nav-item active" data-page="dashboard">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span>概要</span>
+      </a>
+      <a class="admin-nav-item" data-page="users">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>メンバー管理</span>
+      </a>
+      <a class="admin-nav-item" data-page="channels">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg>
+        <span>チャンネル管理</span>
+      </a>
+      <a class="admin-nav-item" data-page="broadcast">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+        <span>一斉通知</span>
+      </a>
+      <a class="admin-nav-item" data-page="settings">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>ワークスペース設定</span>
+      </a>
+      <a class="admin-nav-item" data-page="messages">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span>メッセージ管理</span>
+      </a>
+    </nav>
+    <div class="admin-sidebar-footer">
+      <a href="/" class="admin-back-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+        チャットに戻る
+      </a>
+      <div class="admin-user-info" id="adminUserInfo"></div>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-page" id="pageDashboard">
+      <div class="admin-page-header"><h1>ワークスペースの概要</h1>
+        <button class="btn-refresh" id="refreshStats"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> 更新</button>
+      </div>
+      <div class="stats-grid" id="statsGrid"></div>
+      <div class="admin-section"><h2>チャンネルアクティビティ</h2><div id="channelBars"></div></div>
+    </div>
+
+    <div class="admin-page hidden" id="pageUsers">
+      <div class="admin-page-header"><h1>メンバー管理</h1></div>
+      <div class="admin-table-wrap"><table class="admin-table"><thead><tr>
+        <th>メンバー</th><th>メール</th><th>ステータス</th><th>ロール</th><th>参加日</th><th></th>
+      </tr></thead><tbody id="usersTableBody"></tbody></table></div>
+    </div>
+
+    <div class="admin-page hidden" id="pageChannels">
+      <div class="admin-page-header"><h1>チャンネル管理</h1></div>
+      <div class="admin-table-wrap"><table class="admin-table"><thead><tr>
+        <th>チャンネル</th><th>トピック</th><th>メンバー</th><th>状態</th><th>作成日</th><th></th>
+      </tr></thead><tbody id="channelsTableBody"></tbody></table></div>
+    </div>
+
+    <div class="admin-page hidden" id="pageBroadcast">
+      <div class="admin-page-header"><h1>一斉通知</h1></div>
+      <div class="admin-section" style="max-width:640px">
+        <h2>新しい通知を送信</h2>
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">#announcements チャンネルと全メンバーに通知されます。</p>
+        <textarea id="broadcastText" class="broadcast-textarea" placeholder="全メンバーに送信するメッセージを入力..." rows="4"></textarea>
+        <div style="display:flex;justify-content:flex-end;margin-top:8px">
+          <button class="btn-primary-sm" id="sendBroadcast" disabled>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg> 送信する
+          </button>
+        </div>
+      </div>
+      <div class="admin-section" style="max-width:640px;margin-top:16px">
+        <h2>送信履歴</h2><div id="broadcastHistory"></div>
+      </div>
+    </div>
+
+    <div class="admin-page hidden" id="pageSettings">
+      <div class="admin-page-header"><h1>ワークスペース設定</h1></div>
+      <div class="admin-section settings-form" style="max-width:520px">
+        <div class="settings-group"><label>ワークスペース名</label><input type="text" id="wsName" placeholder="My Workspace"></div>
+        <div class="settings-group"><label>ロゴ URL</label><input type="url" id="wsLogo" placeholder="https://example.com/logo.png"><div class="logo-preview" id="logoPreview"></div></div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px">
+          <button class="btn-cancel" id="wsReset">リセット</button>
+          <button class="btn-primary-sm" id="wsSave">変更を保存</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-page hidden" id="pageMessages">
+      <div class="admin-page-header"><h1>メッセージ管理</h1>
+        <div class="search-bar"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="messageSearch" placeholder="メッセージを検索...">
+        </div>
+      </div>
+      <div class="admin-table-wrap"><table class="admin-table"><thead><tr>
+        <th>送信者</th><th>チャンネル</th><th>内容</th><th>添付</th><th>日時</th><th></th>
+      </tr></thead><tbody id="messagesTableBody"></tbody></table></div>
+    </div>
+  </main>
+</div>
+
+<!-- Confirm Modal -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal-confirm">
+    <h3 id="confirmTitle">確認</h3>
+    <p id="confirmText"></p>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="confirmCancel">キャンセル</button>
+      <button class="btn-danger" id="confirmOk">実行する</button>
+    </div>
+  </div>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>

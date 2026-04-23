@@ -1,268 +1,221 @@
-// ==================== DOM REFS ====================
-
 const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => document.querySelectorAll(sel);
 
-const stepEmail = $('#stepEmail');
+const stepSignin = $('#stepSignin');
 const stepPassword = $('#stepPassword');
 const stepWorkspace = $('#stepWorkspace');
-const emailForm = $('#emailForm');
-const emailInput = $('#emailInput');
-const passwordForm = $('#passwordForm');
-const passwordInput = $('#passwordInput');
-const passwordToggle = $('#passwordToggle');
-const emailDisplay = $('#emailDisplay');
-const workspaceEmailDisplay = $('#workspaceEmailDisplay');
-const backToEmail = $('#backToEmail');
-const googleBtn = $('#googleBtn');
-const appleBtn = $('#appleBtn');
-const workspaceList = $('#workspaceList');
 
 let currentEmail = '';
 
 // ==================== STEP TRANSITIONS ====================
 
-function showStep(targetStep) {
-  [stepEmail, stepPassword, stepWorkspace].forEach(step => {
-    step.classList.add('hidden');
-  });
-  targetStep.classList.remove('hidden');
-  // Re-trigger animation
-  targetStep.style.animation = 'none';
-  targetStep.offsetHeight; // force reflow
-  targetStep.style.animation = '';
+function showStep(target) {
+  [stepSignin, stepPassword, stepWorkspace].forEach(s => s.classList.add('hidden'));
+  target.classList.remove('hidden');
+  target.style.animation = 'none';
+  target.offsetHeight;
+  target.style.animation = '';
 }
 
-// ==================== EMAIL STEP ====================
+// ==================== STEP 1: EMAIL ====================
 
-emailForm.addEventListener('submit', (e) => {
+$('#emailForm').addEventListener('submit', (e) => {
   e.preventDefault();
-  const email = emailInput.value.trim();
+  const email = $('#emailInput').value.trim();
+  clearError($('#emailInput'));
 
-  // Clear previous errors
-  clearError(emailInput);
-
-  // Validate
-  if (!email) {
-    showError(emailInput, 'メールアドレスを入力してください');
-    return;
-  }
-
-  if (!isValidEmail(email)) {
-    showError(emailInput, '有効なメールアドレスを入力してください');
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showError($('#emailInput'), '有効なメールアドレスを入力してください');
     return;
   }
 
   currentEmail = email;
-
-  // Show loading
   const btn = $('#emailSubmitBtn');
-  setLoading(btn, true);
+  btn.classList.add('loading');
+  btn.disabled = true;
 
-  // Simulate API call
   setTimeout(() => {
-    setLoading(btn, false);
-    emailDisplay.textContent = email;
+    btn.classList.remove('loading');
+    btn.disabled = false;
+    $('#emailDisplay').textContent = email;
     showStep(stepPassword);
-    passwordInput.focus();
-  }, 1200);
+    // Focus first code input
+    $$('.code-input')[0].focus();
+  }, 1000);
 });
 
-// ==================== PASSWORD STEP ====================
+// ==================== STEP 2: CODE INPUT ====================
 
-passwordForm.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const password = passwordInput.value;
+const codeInputs = $$('.code-input');
 
-  clearError(passwordInput.closest('.password-wrapper').querySelector('input'));
+codeInputs.forEach((input, idx) => {
+  input.addEventListener('input', (e) => {
+    const val = e.target.value.replace(/\D/g, '');
+    e.target.value = val;
 
-  if (!password) {
-    showError(passwordInput, 'パスワードを入力してください');
-    return;
-  }
+    if (val) {
+      e.target.classList.add('filled');
+      // Move to next
+      const next = codeInputs[idx + 1];
+      if (next) next.focus();
+    } else {
+      e.target.classList.remove('filled');
+    }
 
-  if (password.length < 4) {
-    showError(passwordInput, 'パスワードが短すぎます');
-    return;
-  }
+    // Check if all filled
+    const code = Array.from(codeInputs).map(i => i.value).join('');
+    if (code.length === 6) {
+      verifyCode(code);
+    }
+  });
 
-  const btn = $('#passwordSubmitBtn');
-  setLoading(btn, true);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Backspace' && !e.target.value) {
+      e.target.classList.remove('filled');
+      const prev = codeInputs[idx - 1];
+      if (prev) { prev.focus(); prev.value = ''; prev.classList.remove('filled'); }
+    }
+  });
 
-  // Simulate authentication
+  // Handle paste
+  input.addEventListener('paste', (e) => {
+    e.preventDefault();
+    const text = (e.clipboardData.getData('text') || '').replace(/\D/g, '').slice(0, 6);
+    text.split('').forEach((ch, i) => {
+      if (codeInputs[i]) {
+        codeInputs[i].value = ch;
+        codeInputs[i].classList.add('filled');
+      }
+    });
+    if (text.length === 6) verifyCode(text);
+    else if (codeInputs[text.length]) codeInputs[text.length].focus();
+  });
+
+  input.addEventListener('focus', () => {
+    input.select();
+  });
+});
+
+function verifyCode(code) {
+  // Animate success
+  codeInputs.forEach(i => i.disabled = true);
+
   setTimeout(() => {
-    setLoading(btn, false);
-    workspaceEmailDisplay.textContent = `${currentEmail} のワークスペース`;
+    codeInputs.forEach(i => { i.disabled = false; i.classList.remove('filled'); i.value = ''; });
+    $('#wsEmailName').textContent = currentEmail;
     showStep(stepWorkspace);
-    showToast('認証に成功しました', 'success');
-  }, 1500);
+    showToast('認証に成功しました');
+  }, 800);
+}
+
+// Resend
+$('#resendBtn').addEventListener('click', () => {
+  const btn = $('#resendBtn');
+  btn.textContent = '送信しました';
+  btn.classList.add('sent');
+  setTimeout(() => {
+    btn.textContent = 'コードを再送信';
+    btn.classList.remove('sent');
+  }, 3000);
 });
 
-// Password toggle
-passwordToggle.addEventListener('click', () => {
-  const type = passwordInput.type === 'password' ? 'text' : 'password';
-  passwordInput.type = type;
-  passwordToggle.style.color = type === 'text' ? '#1264a3' : '#999';
-});
-
-// Back button
-backToEmail.addEventListener('click', () => {
-  showStep(stepEmail);
-  emailInput.focus();
+// Back
+$('#backToEmail').addEventListener('click', () => {
+  showStep(stepSignin);
+  $('#emailInput').focus();
 });
 
 // ==================== SOCIAL AUTH ====================
 
-googleBtn.addEventListener('click', () => {
-  setButtonLoading(googleBtn, true);
+$('#googleBtn').addEventListener('click', () => {
+  const btn = $('#googleBtn');
+  btn.disabled = true;
+  btn.querySelector('span').textContent = '接続中...';
+
   setTimeout(() => {
-    setButtonLoading(googleBtn, false);
+    btn.disabled = false;
+    btn.querySelector('span').textContent = 'Google で続行する';
     currentEmail = 'user@gmail.com';
-    workspaceEmailDisplay.textContent = `${currentEmail} のワークスペース`;
+    $('#wsEmailName').textContent = currentEmail;
     showStep(stepWorkspace);
-    showToast('Googleアカウントで認証しました', 'success');
-  }, 1500);
+    showToast('Google アカウントで認証しました');
+  }, 1200);
 });
 
-appleBtn.addEventListener('click', () => {
-  setButtonLoading(appleBtn, true);
+$('#appleBtn').addEventListener('click', () => {
+  const btn = $('#appleBtn');
+  btn.disabled = true;
+  btn.querySelector('span').textContent = '接続中...';
+
   setTimeout(() => {
-    setButtonLoading(appleBtn, false);
+    btn.disabled = false;
+    btn.querySelector('span').textContent = 'Apple で続行する';
     currentEmail = 'user@icloud.com';
-    workspaceEmailDisplay.textContent = `${currentEmail} のワークスペース`;
+    $('#wsEmailName').textContent = currentEmail;
     showStep(stepWorkspace);
-    showToast('Appleアカウントで認証しました', 'success');
-  }, 1500);
+    showToast('Apple アカウントで認証しました');
+  }, 1200);
 });
 
-// ==================== WORKSPACE SELECT ====================
+// ==================== STEP 3: WORKSPACE ====================
 
-workspaceList.querySelectorAll('.workspace-option').forEach(option => {
-  option.addEventListener('click', () => {
-    const wsName = option.querySelector('.ws-name').textContent;
+$$('.ws-card').forEach(card => {
+  card.addEventListener('click', (e) => {
+    e.preventDefault();
+    const name = card.querySelector('.ws-card-name').textContent;
 
-    // Add selection effect
-    option.style.background = '#e8f5fa';
-    option.style.borderColor = '#1264a3';
+    // Highlight selected
+    $$('.ws-card').forEach(c => c.style.opacity = '0.5');
+    card.style.opacity = '1';
+    card.style.borderColor = '#4A154B';
+    card.style.background = '#faf5fb';
 
-    showToast(`${wsName} に接続中...`, 'success');
+    const openBtn = card.querySelector('.ws-card-open');
+    openBtn.textContent = '接続中...';
+    openBtn.style.background = '#4A154B';
+    openBtn.style.color = '#fff';
 
     setTimeout(() => {
-      // Redirect to main app
       window.location.href = 'index.html';
-    }, 1200);
+    }, 1000);
   });
 });
 
-// ==================== VALIDATION ====================
+// ==================== HELPERS ====================
 
-function isValidEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
-function showError(input, message) {
+function showError(input, msg) {
   input.classList.add('error');
-
-  // Remove existing error
-  const existing = input.closest('.form-group, .password-wrapper')?.querySelector('.form-error');
+  const existing = input.parentElement.querySelector('.form-error');
   if (existing) existing.remove();
-
-  const errorEl = document.createElement('div');
-  errorEl.className = 'form-error';
-  errorEl.innerHTML = `<svg width="14" height="14" viewBox="0 0 16 16" fill="#e01e5a"><path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 3a1 1 0 0 1 1 1v4a1 1 0 1 1-2 0V5a1 1 0 0 1 1-1zm0 8a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg> ${message}`;
-
-  const parent = input.closest('.form-group') || input.closest('.password-wrapper').parentElement;
-  parent.appendChild(errorEl);
-
-  // Shake input
-  input.style.animation = 'none';
-  input.offsetHeight;
-  input.style.animation = 'shakeIn 0.3s ease';
+  const el = document.createElement('div');
+  el.className = 'form-error';
+  el.textContent = msg;
+  input.parentElement.appendChild(el);
 }
 
 function clearError(input) {
   input.classList.remove('error');
-  const parent = input.closest('.form-group') || input.closest('.password-wrapper')?.parentElement;
-  if (!parent) return;
-  const errorEl = parent.querySelector('.form-error');
-  if (errorEl) errorEl.remove();
+  const el = input.parentElement.querySelector('.form-error');
+  if (el) el.remove();
 }
 
-// Clear errors on input
-emailInput.addEventListener('input', () => clearError(emailInput));
-passwordInput.addEventListener('input', () => clearError(passwordInput));
+$('#emailInput').addEventListener('input', () => clearError($('#emailInput')));
 
-// ==================== LOADING STATES ====================
-
-function setLoading(btn, loading) {
-  const text = btn.querySelector('.btn-text');
-  const loader = btn.querySelector('.btn-loading');
-  if (loading) {
-    text.style.display = 'none';
-    loader.style.display = 'inline-flex';
-    btn.disabled = true;
-  } else {
-    text.style.display = '';
-    loader.style.display = 'none';
-    btn.disabled = false;
-  }
-}
-
-function setButtonLoading(btn, loading) {
-  if (loading) {
-    btn.dataset.originalText = btn.innerHTML;
-    btn.innerHTML = '<span class="spinner" style="border-color:rgba(0,0,0,0.15);border-top-color:#1d1c1d"></span>';
-    btn.disabled = true;
-    btn.style.justifyContent = 'center';
-  } else {
-    btn.innerHTML = btn.dataset.originalText;
-    btn.disabled = false;
-  }
-}
-
-// ==================== TOAST ====================
-
-function showToast(message, type) {
-  // Remove existing
+function showToast(message) {
   const existing = document.querySelector('.toast');
   if (existing) existing.remove();
-
   const toast = document.createElement('div');
-  toast.className = `toast ${type || ''}`;
-  toast.innerHTML = `
-    ${type === 'success' ? '<svg width="16" height="16" viewBox="0 0 16 16" fill="#fff"><path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm3.35 5.35l-4 4a.5.5 0 0 1-.7 0l-2-2a.5.5 0 1 1 .7-.7L7 9.29l3.65-3.64a.5.5 0 1 1 .7.7z"/></svg>' : ''}
-    ${message}
-  `;
+  toast.className = 'toast success';
+  toast.textContent = message;
   document.body.appendChild(toast);
-
-  requestAnimationFrame(() => {
-    toast.classList.add('show');
-  });
-
-  setTimeout(() => {
-    toast.classList.remove('show');
-    setTimeout(() => toast.remove(), 300);
-  }, 3000);
+  requestAnimationFrame(() => toast.classList.add('show'));
+  setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 2500);
 }
 
-// ==================== KEYBOARD ====================
-
+// Keyboard: Escape goes back
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    // If on password step, go back to email
-    if (!stepPassword.classList.contains('hidden')) {
-      showStep(stepEmail);
-      emailInput.focus();
-    }
+  if (e.key === 'Escape' && !stepPassword.classList.contains('hidden')) {
+    showStep(stepSignin);
+    $('#emailInput').focus();
   }
-});
-
-// ==================== ENTER KEY ANIMATION ====================
-
-emailInput.addEventListener('focus', () => {
-  emailInput.parentElement.style.transform = 'scale(1.01)';
-  emailInput.parentElement.style.transition = 'transform 0.2s';
-});
-
-emailInput.addEventListener('blur', () => {
-  emailInput.parentElement.style.transform = '';
 });

@@ -319,6 +319,7 @@ body {
 .global-nav-profile {
   position: relative;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .profile-avatar {
@@ -358,6 +359,28 @@ body {
   background: transparent;
   border-color: var(--global-nav-text);
 }
+
+/* Admin gear link */
+.global-nav-admin {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--global-nav-text);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  text-decoration: none;
+  position: relative;
+}
+
+.global-nav-admin:hover {
+  background: rgba(255,255,255,0.15);
+  color: var(--global-nav-text-active);
+}
+
+.global-nav-admin.hidden { display: none; }
 
 /* Tooltip */
 [data-tooltip] {
@@ -1248,6 +1271,250 @@ body {
 .message.grouped .message-avatar {
   visibility: hidden;
   width: 36px;
+}
+
+/* ==================== FILE ATTACHMENTS ==================== */
+
+.message-attachment {
+  margin-top: 8px;
+  max-width: 480px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  background: var(--hover-bg);
+}
+
+.message-attachment img {
+  display: block;
+  max-width: 100%;
+  max-height: 360px;
+  object-fit: contain;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.message-attachment img:hover {
+  opacity: 0.9;
+}
+
+.message-attachment video {
+  display: block;
+  max-width: 100%;
+  max-height: 400px;
+  background: #000;
+}
+
+.message-attachment-file {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+}
+
+.attachment-file-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.attachment-file-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.attachment-file-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.attachment-file-name:hover {
+  text-decoration: underline;
+}
+
+.attachment-file-meta {
+  font-size: 12px;
+  color: var(--main-text-secondary);
+}
+
+/* File Preview (in input area) */
+.file-preview {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+}
+
+.file-preview-inner {
+  display: flex;
+  gap: 8px;
+}
+
+.file-preview-item {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  background: var(--hover-bg);
+  flex-shrink: 0;
+}
+
+.file-preview-item img,
+.file-preview-item video {
+  display: block;
+  height: 80px;
+  max-width: 140px;
+  object-fit: cover;
+}
+
+.file-preview-item .file-preview-generic {
+  width: 100px;
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px;
+}
+
+.file-preview-generic .file-ext {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+.file-preview-generic .file-fname {
+  font-size: 10px;
+  color: var(--main-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90px;
+}
+
+.file-preview-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  border: none;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.file-preview-item:hover .file-preview-remove {
+  opacity: 1;
+}
+
+.file-upload-progress {
+  margin-top: 4px;
+  height: 3px;
+  background: var(--border-color);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.file-upload-progress-bar {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.3s;
+}
+
+/* Lightbox */
+.lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 300;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+}
+
+.lightbox.open {
+  display: flex;
+  animation: modalFadeIn 0.2s ease;
+}
+
+.lightbox img,
+.lightbox video {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-close:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+/* Drag & Drop overlay */
+.drop-overlay {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background: rgba(18,100,163,0.08);
+  border: 2px dashed var(--accent);
+  border-radius: 10px;
+  z-index: 20;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.drop-overlay.active {
+  display: flex;
+}
+
+.drop-overlay-text {
+  background: var(--accent);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
 }
 
 /* ==================== SKELETON LOADING ==================== */
